@@ -7,7 +7,7 @@ import { Observable, catchError, map, throwError } from 'rxjs';
 })
 export class CrudService {
   //NodeJS API
-  REST_API:String = "http://localhost/8000/api";
+  REST_API:String = "http://localhost:8000/api";
   //Set Http Headers
   httpHeaders= new HttpHeaders().set('Content-Type', 'application/json')
   constructor(private httpClient:HttpClient) { }
@@ -29,7 +29,6 @@ export class CrudService {
     catchError(this.handleError)
     )
   }
-
   //update book data
   updateBook(id:any, data:any):Observable<any>{
     let API_URL = `${this.REST_API}/update-book/${id}`;

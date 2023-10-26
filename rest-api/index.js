@@ -17,5 +17,5 @@ const bookRoute = require('./node-backend/routes/book.routes');
 app.use('/api', bookRoute); 
 
 app.listen(port, () => {
-  console.log(`Server is running on port 8000`);
+  console.log(`Server is running on port ${port}`);
 });
