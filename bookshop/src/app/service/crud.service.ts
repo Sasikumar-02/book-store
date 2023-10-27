@@ -43,6 +43,12 @@ export class CrudService {
       catchError(this.handleError)
     )
   }
+
+  // search books by name
+searchBooks(query: string): Observable<any> {
+  let API_URL = `${this.REST_API}/search-books?query=${query}`;
+  return this.httpClient.get(API_URL, { headers: this.httpHeaders });
+}
   //error
   handleError(error: HttpErrorResponse){
     let errorMessage='';

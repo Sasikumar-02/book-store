@@ -35,9 +35,6 @@ bookRoute.route('/').get((req, res, next) => {
             return next(error);
         });
 });
-
-
-
 //get book by id
 bookRoute.route('/read-book/:id').get((req, res, next) => {
     Book.findById(req.params.id)
@@ -52,7 +49,6 @@ bookRoute.route('/read-book/:id').get((req, res, next) => {
             return next(error);
         });
 });
-
 
 //update book by id
 bookRoute.route('/update-book/:id').put((req, res, next) => {
@@ -77,6 +73,27 @@ bookRoute.route('/delete-book/:id').delete((req, res, next) => {
             return next(error);
         });
 });
+
+bookRoute.route('/search-books').get(async (req, res, next) => {
+    const query = req.query.query; // Get the query parameter from the request
+    try {
+        // Use a regular expression to perform a case-insensitive search for books by name
+        const results = await Book.find({
+            name: {
+                $regex: new RegExp(query, 'i'),
+            },
+        }).collation({ locale: 'en', strength: 2 });
+
+        if (results.length === 0) {
+            res.status(404).json({ message: 'No matching books found' });
+        } else {
+            res.status(200).json(results);
+        }
+    } catch (error) {
+        return next(error);
+    }
+});
+
 
 
 module.exports=bookRoute;

@@ -4,6 +4,13 @@
             All Books List
         </h2>     
     </div>
+    <!-- Search bar -->
+    <div class="input-group mb-3">
+        <input type="text" class="form-control" [(ngModel)]="searchText" placeholder="Search for a book...">
+        <div class="input-group-append">
+            <button class="btn btn-outline-secondary" type="button" (click)="searchBooks()">Search</button>
+        </div>
+    </div>
     <div class="table-responsive">
         <table class="table table-bordered">
             <thead>
