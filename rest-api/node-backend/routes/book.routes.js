@@ -1,28 +1,43 @@
 const express = require('express');
+const {body, validationResult} = require('express-validator');
 const app = express();
 const bookRoute = express.Router(); 
 let Book = require("../model/Book");
 
-//Add book for store
-// bookRoute.route('/add-book').post((req, res, next)=>{
-//     Book.create(req.body,(error, data)=>{
-//         if(error){
-//             return next(error);
-//         }else{
-//             res.json(data); 
-//         }
-//     })
-// })
+// bookRoute.post('/add-book', async (req, res) => {
+//     try {
+//       const newBook = new Book(req.body);
+//       const savedBook = await newBook.save();
+//       res.status(201).json(savedBook);
+//     } catch (error) {
+//       res.status(400).json({ error: error.message });
+//     }
+//   });
 
-bookRoute.post('/add-book', async (req, res) => {
-    try {
-      const newBook = new Book(req.body);
-      const savedBook = await newBook.save();
-      res.status(201).json(savedBook);
-    } catch (error) {
-      res.status(400).json({ error: error.message });
+bookRoute.post(
+    '/add-book',
+    [
+      // Validate the request body
+      body('name').not().isEmpty().withMessage('Name is required'),
+      body('price').not().isEmpty().withMessage('Price is required').isNumeric().withMessage('Price must be a number'),
+      body('description').not().isEmpty().withMessage('Description is required'),
+    ],
+    async (req, res) => {
+      // Check for validation errors
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+      }
+  
+      try {
+        const newBook = new Book(req.body);
+        const savedBook = await newBook.save();
+        res.status(201).json(savedBook);
+      } catch (error) {
+        res.status(400).json({ error: error.message });
+      }
     }
-  });
+  );
 
 //get all book from store
 bookRoute.route('/').get((req, res, next) => {
@@ -61,7 +76,6 @@ bookRoute.route('/update-book/:id').put((req, res, next) => {
             return next(error);
         });
 });
-
 
 //delete book
 bookRoute.route('/delete-book/:id').delete((req, res, next) => {
